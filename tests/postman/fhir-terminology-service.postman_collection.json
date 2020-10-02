@@ -1,0 +1,541 @@
+{
+	"info": {
+		"_postman_id": "786eee09-3220-41e9-b6fd-c09e1d1079de",
+		"name": "fhir-terminology-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/metadata",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/metadata",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"metadata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read CodeSystem",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/CodeSystem/Sample.iscru.fhir.fts.model.CodeTable",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"CodeSystem",
+						"Sample.iscru.fhir.fts.model.CodeTable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read ValueSet",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/ValueSet/Sample.iscru.fhir.fts.model.CodeTable",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"ValueSet",
+						"Sample.iscru.fhir.fts.model.CodeTable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search CodeSystem",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/CodeSystem?url=urn:CodeSystem:CodeTable",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"CodeSystem"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "urn:CodeSystem:CodeTable"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search ValueSet",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/ValueSet?url=urn:ValueSet:CodeTable",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"ValueSet"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "urn:ValueSet:CodeTable"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CodeSystem $lookup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/CodeSystem/$lookup?system=urn:CodeSystem:CodeTable&code=TEST",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"CodeSystem",
+						"$lookup"
+					],
+					"query": [
+						{
+							"key": "system",
+							"value": "urn:CodeSystem:CodeTable"
+						},
+						{
+							"key": "code",
+							"value": "TEST"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CodeSystem $lookup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"system\",\r\n     \"value\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"value\" : \"TEST\"\r\n    }\r\n  ]\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/CodeSystem/$lookup",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"CodeSystem",
+						"$lookup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ValueSet $expand",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/ValueSet/Sample.iscru.fhir.fts.model.CodeTable/$expand?filter=%25&sort=-description&offset=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"ValueSet",
+						"Sample.iscru.fhir.fts.model.CodeTable",
+						"$expand"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "%25"
+						},
+						{
+							"key": "sort",
+							"value": "-description"
+						},
+						{
+							"key": "offset",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ValueSet $expand",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"url\",\r\n     \"value\" : \"urn:ValueSet:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"filter\",\r\n     \"value\" : \"%\"\r\n    }\r\n    ,{\r\n     \"name\" : \"sort\",\r\n     \"value\" : \"-description\"\r\n    }\r\n    ,{\r\n     \"name\" : \"offset\",\r\n     \"value\" : \"1\"\r\n    }\r\n  ]\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/ValueSet/$expand",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"ValueSet",
+						"$expand"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CodeSystem $validate-code",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/CodeSystem/Sample.iscru.fhir.fts.model.CodeTable/$validate-code?code=TEST&display=foo",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"CodeSystem",
+						"Sample.iscru.fhir.fts.model.CodeTable",
+						"$validate-code"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "TEST"
+						},
+						{
+							"key": "display",
+							"value": "foo"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CodeSystem $validate-code",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"url\",\r\n     \"value\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"value\" : \"TEST\"\r\n    }\r\n    ,{\r\n     \"name\" : \"display\",\r\n     \"value\" : \"foo\"\r\n    }\r\n  ]\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/CodeSystem/$validate-code",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"CodeSystem",
+						"$validate-code"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ValueSet $validate-code",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/ValueSet/Sample.iscru.fhir.fts.model.CodeTable/$validate-code?code=TEST&display=foo&system=urn:CodeSystem:CodeTable",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"ValueSet",
+						"Sample.iscru.fhir.fts.model.CodeTable",
+						"$validate-code"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "TEST"
+						},
+						{
+							"key": "display",
+							"value": "foo"
+						},
+						{
+							"key": "system",
+							"value": "urn:CodeSystem:CodeTable"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ValueSet $validate-code",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/fhir+json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"system\",\r\n     \"value\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"value\" : \"TEST\"\r\n    }\r\n    ,{\r\n     \"name\" : \"display\",\r\n     \"value\" : \"foo\"\r\n    }\r\n  ]\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/ValueSet/Sample.iscru.fhir.fts.model.CodeTable/$validate-code",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"ValueSet",
+						"Sample.iscru.fhir.fts.model.CodeTable",
+						"$validate-code"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "0eb4019f-917d-4d88-8501-bed96dbc35c8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0668de19-88f6-4fbb-9e1e-57f3c4d61686",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ee88d769-725f-422f-bfea-94131ca651a7",
+			"key": "url",
+			"value": "http://localhost:52774/csp/healthshare/terminology/fhir/r4"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
