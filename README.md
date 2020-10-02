@@ -7,16 +7,16 @@ Implementation of FHIR Terminology Service specification (https://www.hl7.org/fh
 $ git clone https://github.com/intersystems-ru/fhir-terminology-service.git
 ```
 1. Install IRIS for Health 2020.1 or newer.
-2. Create "terminology" directory in <installation directory>/dev/fhir/fhir-metadata, and copy [dummy-search-parameters.json](../main/src/fhir-search-parameters/dummy-search-parameters.json) file there. The file contains dummy search parameters for ValueSet and CodeSystems resources. Those parameters are required in order for $expand and $validate-code operations to work via HTTP GET.
+2. Create "terminology" directory in ```<installation directory>/dev/fhir/fhir-metadata```, and copy [dummy-search-parameters.json](../main/src/fhir-search-parameters/dummy-search-parameters.json) file there. The file contains dummy search parameters for ValueSet and CodeSystems resources. Those parameters are required in order for $expand and $validate-code operations to work via HTTP GET.
 3. Open IRIS terminal and set up a new "foundation" namespace, e.g.:
 ```
 USER> zn "HSLIB"
 HSLIB> do ##class(HS.HC.Util.Installer).InstallFoundation("terminology")
 ```
-4.Import classes into the namespace, e.g.:
+4. Import classes into the namespace, e.g.:
 ```
 HSLIB> zn "terminology"
-TERMINOLOGY> do $System.OBJ.ImportDir("/tmp/fhir-terminology-service/src/cls/", "*.cls", "ckbud", .err, 1)
+TERMINOLOGY> do $System.OBJ.ImportDir("/tmp/fhir-terminology-service/", "*.cls", "ckbud", .err, 1)
 ```
 5. Create custom strategy class - a subclass of [iscru.fhir.fts.FTSStrategy](../main/src/cls/iscru/fhir/fts/FTSStrategy.cls). Override StrategyKey parameter as well as getCodeTablePackage(), getCodePropertyName() and getDisplayPropertyName() methods, e.g.:
 ```
@@ -24,22 +24,22 @@ Parameter StrategyKey = "<full name of the new class>";
 
 ClassMethod getCodeTablePackage(shortClassName As %String, resourceType As %String, url As %String) As %String
 {
-	quit "<name of the package that all code table classes belong to>"
+  quit "<name of the package that all code table classes belong to>"
 }
 
 ClassMethod getCodePropertyName(className As %String) As %String
 {
-	quit "<name of the 'code' property, i.e. the property that will be mapped to CodeSystem.concept.code element>"
+  quit "<name of the 'code' property, i.e. the property that will be mapped to CodeSystem.concept.code element>"
 }
 
 ClassMethod getDisplayPropertyName(className As %String) As %String
 {
-	quit "<name of the 'display' property, i.e. the property that will be mapped to CodeSystem.concept.display element>"
+  quit "<name of the 'display' property, i.e. the property that will be mapped to CodeSystem.concept.display element>"
 }
 ```
-* Refer to [Sample.iscru.fhir.fts.SimpleStrategy](../main/samples/src/cls/Sample/iscru/fhir/fts/SimpleStrategy.cls) as an example of a custom strategy class.
-* Implement listCodeTableClasses() method to enable searching CodeSystem/ValueSet resources without specifying url.
-* Override isExcludedProperty() method if any properties of code table classes should not be included into the corresponding CodeSystem resources.
+* Refer to [Sample.iscru.fhir.fts.SimpleStrategy](../main/samples/cls/Sample/iscru/fhir/fts/SimpleStrategy.cls) as an example of a custom strategy class.
+* Additionally implement listCodeTableClasses() method to enable searching CodeSystem/ValueSet resources without specifying url.
+* Override isExcludedProperty() method if any code table class properties should not show up in the corresponding CodeSystem resources.
 
 6. Run ```do ##class(HS.FHIRServer.ConsoleSetup).Setup()``` and create a custom metadata set with dummy search parameters for CodeSystem and ValueSet resources:
 ```
@@ -68,7 +68,7 @@ Enter a directory which contains the custom metadata[-]: C:\InterSystems\IRISHea
 You are about to create metadata set 'HL7v40terminology'. Proceed?[no] (y/n): yes
 ...
 ```
-7. Create a new FHIR endpoint based on the new metadata set and your custom strategy class ([Sample.iscru.fhir.fts.SimpleStrategy](../main/samples/src/cls/Sample/iscru/fhir/fts/SimpleStrategy.cls) is shown below as a custom strategy class):
+7. Create a new FHIR endpoint based on the new metadata set and your custom strategy class ([Sample.iscru.fhir.fts.SimpleStrategy](../main/samples/cls/Sample/iscru/fhir/fts/SimpleStrategy.cls) is shown below as a custom strategy class):
 ```
 What do you want to do?
   0)  Quit
@@ -97,7 +97,7 @@ Enter the OAuth Client Name for this Endpoint (if any)[-]:
 You are about to create a HL7v40terminology endpoint at /csp/healthshare/terminology/fhir/r4.  Proceed?[no] (y/n): yes
 ...
 ```
-8. Next, configure the endpoint - just change DebugMode to 4 leaving default values for everything else:
+8. Next, configure the new endpoint: just change DebugMode to 4 leaving default values for everything else:
 ```
 What do you want to do?
   0)  Quit
@@ -145,17 +145,20 @@ MaxConditionalDeleteResults: 3
 Save Changes? (y/n): yes
 Changes have been saved
 ```
-9. Import [fhir-terminology-service.postman_collection.json](../main/tests/postman/fhir-terminology-service.postman_collection.json) file into Postman, adjust "url" variable defined for the collection, test the service against your code table classes (you'd need to modify request parameters accordingly).
-There is the [Sample.iscru.fhir.fts.model.CodeTable](../main/samples/src/cls/Sample/iscru/fhir/fts/model/CodeTable.cls) sample class in the repo. If you import and populate it (```do ##class(Sample.iscru.fhir.fts.model.CodeTable).Populate(10)```), then the predefined requests from Postman collection can be tested right away.
+9. Import [fhir-terminology-service.postman_collection.json](../main/tests/postman/fhir-terminology-service.postman_collection.json) file into Postman, adjust "url" variable defined for the collection and test the FHIR API against [Sample.iscru.fhir.fts.model.CodeTable](../main/samples/cls/Sample/iscru/fhir/fts/model/CodeTable.cls) sample code table or your own code table classes. In the latter case, you will need to modify request parameters accordingly.
+   * Use the following command to populate Sample.iscru.fhir.fts.model.CodeTable:
+   ```
+   do ##class(Sample.iscru.fhir.fts.model.CodeTable).Populate(10)
+   ```
 
 ## Supported FHIR Interactions
 Currently read and search-type interactions for ValueSet and CodeSystem resources are supported. The only supported search parameter for both resources is "url".
 
-Supported operations: CodeSystem/$lookup, CodeSystem/$validate-code, ValueSet/$expand and ValueSet/$validate-code.
+Supported operations: ```$lookup``` and ```$validate-code``` on CodeSystem, ```$expand``` and ```$validate-code``` on ValueSet.
 Both HTTP GET and HTTP POST methods are supported for all the four operations.
 
-Find below sample GET requests against Sample.iscru.fhir.fts.model.CodeTable code table class. Prepend each URI with ```http://<server>:<port><web app path>```.
-| URI to be prepended with with ```http://<server>:<port><web app path>```   | Description                                                                           |
+The table below lists some of the possible HTTP GET requests against [Sample.iscru.fhir.fts.model.CodeTable](../main/samples/cls/Sample/iscru/fhir/fts/model/CodeTable.cls) class.
+| URI to be prepended with <br/>```http://<server>:<port><web app path>```   | Description                                                                           |
 |----------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | /metadata                                                                  | Get endpoint's Capability Statement resource.                                         |
 | /CodeSystem/Sample.iscru.fhir.fts.model.CodeTable                          | Read CodeSystem resource corresponding to Sample.iscru.fhir.fts.model.CodeTable class.|
