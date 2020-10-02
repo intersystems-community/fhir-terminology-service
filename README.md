@@ -7,7 +7,8 @@ Implementation of FHIR Terminology Service specification (https://www.hl7.org/fh
 $ git clone https://github.com/intersystems-ru/fhir-terminology-service.git
 ```
 1. Install IRIS for Health 2020.1 or newer.
-2. Create ```terminology``` directory within ```<installation directory>/dev/fhir/fhir-metadata``` and copy [dummy-search-parameters.json](../main/src/fhir-search-parameters/dummy-search-parameters.json) file there. The file contains definitions of several search parameters for ValueSet and CodeSystem resources. The parameters are required in order for ```$expand``` and ```$validate-code``` operations to work via HTTP GET.
+2. Create ```terminology``` directory within ```<installation directory>/dev/fhir/fhir-metadata``` and copy [dummy-search-parameters.json](../main/src/fhir-search-parameters/dummy-search-parameters.json) file there.
+   * The file contains definitions of several search parameters for ValueSet and CodeSystem resources. The parameters are required in order for ```$expand``` and ```$validate-code``` operations to work via HTTP GET.
 3. Open IRIS terminal and set up a new "foundation" namespace, e.g.:
 ```
 USER> zn "HSLIB"
@@ -155,7 +156,7 @@ Changes have been saved
    ```
 
 ## Supported FHIR Interactions
-Currently read and search-type interactions are supported for ValueSet and CodeSystem resources. The only supported search parameter for both resources is "url".
+Currently read and search-type interactions are supported for ValueSet and CodeSystem resources. The only supported search parameter for both resources is ```url```.
 
 Supported operations: ```$lookup``` and ```$validate-code``` on CodeSystem, ```$expand``` and ```$validate-code``` on ValueSet.
 Both HTTP GET and HTTP POST methods are supported for all the four operations.
