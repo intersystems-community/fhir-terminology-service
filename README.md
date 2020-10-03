@@ -19,7 +19,7 @@ HSLIB> do ##class(HS.HC.Util.Installer).InstallFoundation("terminology")
 HSLIB> zn "terminology"
 TERMINOLOGY> do $System.OBJ.ImportDir("/tmp/fhir-terminology-service/", "*.cls", "ckbud", .err, 1)
 ```
-5. Create strategy class for your FHIR Terminology Service endpoint:
+5. Create strategy class for your FHIR Terminology Service endpoint, **or skip this step and use [Sample.iscru.fhir.fts.SimpleStrategy](../main/samples/cls/Sample/iscru/fhir/fts/SimpleStrategy.cls)**. If you choose to create a new strategy class, then do the following:
    * subclass [iscru.fhir.fts.FTSStrategy](../main/src/cls/iscru/fhir/fts/FTSStrategy.cls),
    * override ```StrategyKey``` parameter,
    * implement ```getCodeTablePackage()```, ```getCodePropertyName()``` and ```getDisplayPropertyName()``` methods, e.g.:
@@ -72,7 +72,7 @@ Enter a directory which contains the custom metadata[-]: C:\InterSystems\IRISHea
 You are about to create metadata set 'HL7v40terminology'. Proceed?[no] (y/n): yes
 ...
 ```
-7. Create a new FHIR endpoint based on the new metadata set and your custom strategy class ([Sample.iscru.fhir.fts.SimpleStrategy](../main/samples/cls/Sample/iscru/fhir/fts/SimpleStrategy.cls) is shown below as a custom strategy class):
+7. Create a new FHIR endpoint based on the new metadata set and your custom strategy class (or on [Sample.iscru.fhir.fts.SimpleStrategy](../main/samples/cls/Sample/iscru/fhir/fts/SimpleStrategy.cls)):
 ```
 What do you want to do?
   0)  Quit
@@ -149,7 +149,7 @@ MaxConditionalDeleteResults: 3
 Save Changes? (y/n): yes
 Changes have been saved
 ```
-9. Import [fhir-terminology-service.postman_collection.json](../main/tests/postman/fhir-terminology-service.postman_collection.json) file into Postman, adjust ```url``` variable defined for the collection and test the Terminology FHIR API against [Sample.iscru.fhir.fts.model.CodeTable](../main/samples/cls/Sample/iscru/fhir/fts/model/CodeTable.cls) or your own code table classes. In the latter case, you will need to modify request parameters accordingly.
+9. Import [fhir-terminology-service.postman_collection.json](../main/tests/postman/fhir-terminology-service.postman_collection.json) file into Postman, adjust ```url``` variable defined for the collection and test the Terminology FHIR API against [Sample.iscru.fhir.fts.model.CodeTable](../main/samples/cls/Sample/iscru/fhir/fts/model/CodeTable.cls) or your own code table classes (depending on whether you've created a custom strategy class). In the latter case, you will need to modify request parameters accordingly.
    * Use the following command to populate [Sample.iscru.fhir.fts.model.CodeTable](../main/samples/cls/Sample/iscru/fhir/fts/model/CodeTable.cls):
    ```
    do ##class(Sample.iscru.fhir.fts.model.CodeTable).Populate(10)
