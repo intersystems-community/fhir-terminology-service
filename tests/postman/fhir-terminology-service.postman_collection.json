@@ -243,7 +243,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"system\",\r\n     \"value\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"value\" : \"TEST\"\r\n    }\r\n  ]\r\n}"
+					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"system\",\r\n     \"valueUri\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"valueCode\" : \"TEST\"\r\n    }\r\n  ]\r\n}"
 				},
 				"url": {
 					"raw": "{{url}}/CodeSystem/$lookup",
@@ -327,7 +327,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"url\",\r\n     \"value\" : \"urn:ValueSet:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"filter\",\r\n     \"value\" : \"%\"\r\n    }\r\n    ,{\r\n     \"name\" : \"sort\",\r\n     \"value\" : \"-description\"\r\n    }\r\n    ,{\r\n     \"name\" : \"offset\",\r\n     \"value\" : \"1\"\r\n    }\r\n  ]\r\n}"
+					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"url\",\r\n     \"valueUri\" : \"urn:ValueSet:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"filter\",\r\n     \"valueString\" : \"%\"\r\n    }\r\n    ,{\r\n     \"name\" : \"sort\",\r\n     \"valueString\" : \"-description\"\r\n    }\r\n    ,{\r\n     \"name\" : \"offset\",\r\n     \"valueInteger\" : \"1\"\r\n    }\r\n  ]\r\n}"
 				},
 				"url": {
 					"raw": "{{url}}/ValueSet/$expand",
@@ -407,7 +407,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"url\",\r\n     \"value\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"value\" : \"TEST\"\r\n    }\r\n    ,{\r\n     \"name\" : \"display\",\r\n     \"value\" : \"foo\"\r\n    }\r\n  ]\r\n}"
+					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"url\",\r\n     \"valueUri\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"valueCode\" : \"TEST\"\r\n    }\r\n    ,{\r\n     \"name\" : \"display\",\r\n     \"valueString\" : \"foo\"\r\n    }\r\n  ]\r\n}"
 				},
 				"url": {
 					"raw": "{{url}}/CodeSystem/$validate-code",
@@ -491,7 +491,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"system\",\r\n     \"value\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"value\" : \"TEST\"\r\n    }\r\n    ,{\r\n     \"name\" : \"display\",\r\n     \"value\" : \"foo\"\r\n    }\r\n  ]\r\n}"
+					"raw": "{\r\n  \"resourceType\" : \"Parameters\",\r\n  \"parameter\" : [\r\n    {\r\n     \"name\" : \"system\",\r\n     \"valueUri\" : \"urn:CodeSystem:CodeTable\"\r\n    }\r\n    ,{\r\n     \"name\" : \"code\",\r\n     \"valueCode\" : \"TEST\"\r\n    }\r\n    ,{\r\n     \"name\" : \"display\",\r\n     \"valueString\" : \"foo\"\r\n    }\r\n  ]\r\n}"
 				},
 				"url": {
 					"raw": "{{url}}/ValueSet/Sample.iscru.fhir.fts.model.CodeTable/$validate-code",
@@ -512,7 +512,6 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "0eb4019f-917d-4d88-8501-bed96dbc35c8",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -522,7 +521,6 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "0668de19-88f6-4fbb-9e1e-57f3c4d61686",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -532,10 +530,8 @@
 	],
 	"variable": [
 		{
-			"id": "ee88d769-725f-422f-bfea-94131ca651a7",
 			"key": "url",
 			"value": "http://localhost:52774/csp/healthshare/terminology/fhir/r4"
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

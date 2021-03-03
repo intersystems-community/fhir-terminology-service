@@ -21,9 +21,11 @@ ClassMethod reset(fhirEndpoint As %String)
 ///  or 2) from query (URL) parameters - if there is no request body.
 /// Return a multidim array: return([param name], [value count]) = [value].
 /// An exception is thrown if any unsupported parameters are present.
+/// An exception is thrown if Parameters resource contains a parameter with "part" element.
 /// If <var>singleValueOnly</val> is TRUE then an exception is thrown if more than one value of any parameter is present.
+/// If <var>scalarValueOnly</val> is TRUE then an exception is thrown if a non-scalar paramter value is present within Parameters resource.
 /// An exception is thrown if a modifier is present for any of the query (URL) parameters.
-ClassMethod extractOperationParameters(request As HS.FHIRServer.API.Data.Request, supportedParams As %List, singleValueOnly As %Boolean = {$$$YES}, Output return)
+ClassMethod extractOperationParameters(request As HS.FHIRServer.API.Data.Request, supportedParams As %List, singleValueOnly As %Boolean = {$$$YES}, Output return, scalarValueOnly As %Boolean = {$$$YES})
 {
 	kill return
 	
@@ -48,7 +50,33 @@ ClassMethod extractOperationParameters(request As HS.FHIRServer.API.Data.Request
 				$$$ThrowStatus($$$ADDSC(..#FHIR400STATUS, $$$ERROR($$$GeneralError, "Input parameter '" _ entry.name _ "' is not supported for $" _ request.OperationName _ " interaction")))
 			}
 
-			set return(entry.name, $i(return(entry.name))) = entry.value
+			#dim iter2 As %Iterator.Object = entry.%GetIterator()
+			#dim val = ""
+			#dim found As %Boolean = $$$NO
+			while iter2.%GetNext(.elName, .elVal)
+			{
+				// parameter parts are not supported yet
+				if (elName = "part") $$$ThrowStatus($$$ADDSC(..#FHIR400STATUS, $$$ERROR($$$GeneralError, "Parameters with ""part"" element are not supported yet: " _ entry.name)))
+				
+				if ((elName [ "value") && ($piece(elName, "value", 1) = "")) || (elName = "resource")
+				{
+					// check constraint: http://hl7.org/fhir/r4/parameters.html#invs
+					if found $$$ThrowStatus($$$ADDSC(..#FHIR400STATUS, $$$ERROR($$$GeneralError, "A parameter must have one and only one of (value, resource, part): " _ entry.name)))
+					
+					set val = elVal
+					set found = $$$YES
+				}
+			}
+			
+			// check constraint: http://hl7.org/fhir/r4/parameters.html#invs
+			if 'found $$$ThrowStatus($$$ADDSC(..#FHIR400STATUS, $$$ERROR($$$GeneralError, "A parameter must have one and only one of (value, resource, part): " _ entry.name)))
+			
+			if scalarValueOnly && $isObject(val)
+			{
+				$$$ThrowStatus($$$ADDSC(..#FHIR400STATUS, $$$ERROR($$$GeneralError, "Input parameter '" _ entry.name _ "' contains a non-scalar value")))
+			}
+
+			set return(entry.name, $i(return(entry.name))) = val
 		}
 	}
 	else
