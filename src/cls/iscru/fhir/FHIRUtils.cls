@@ -21,7 +21,6 @@ ClassMethod reset(fhirEndpoint As %String)
 ///  or 2) from query (URL) parameters - if there is no request body.
 /// Return a multidim array: return([param name], [value count]) = [value].
 /// An exception is thrown if any unsupported parameters are present.
-/// An exception is thrown if Parameters resource contains a parameter with "part" element.
 /// If <var>singleValueOnly</val> is TRUE then an exception is thrown if more than one value of any parameter is present.
 /// If <var>scalarValueOnly</val> is TRUE then an exception is thrown if a non-scalar paramter value is present within Parameters resource.
 /// An exception is thrown if a modifier is present for any of the query (URL) parameters.
@@ -55,15 +54,12 @@ ClassMethod extractOperationParameters(request As HS.FHIRServer.API.Data.Request
 			#dim found As %Boolean = $$$NO
 			while iter2.%GetNext(.elName, .elVal)
 			{
-				// parameter parts are not supported yet
-				if (elName = "part") $$$ThrowStatus($$$ADDSC(..#FHIR400STATUS, $$$ERROR($$$GeneralError, "Parameters with ""part"" element are not supported yet: " _ entry.name)))
-				
-				if ((elName [ "value") && ($piece(elName, "value", 1) = "")) || (elName = "resource")
+				if ((elName [ "value") && ($piece(elName, "value", 1) = "")) || (elName = "resource") || (elName = "part")
 				{
 					// check constraint: http://hl7.org/fhir/r4/parameters.html#invs
 					if found $$$ThrowStatus($$$ADDSC(..#FHIR400STATUS, $$$ERROR($$$GeneralError, "A parameter must have one and only one of (value, resource, part): " _ entry.name)))
 					
-					set val = elVal
+					set val = elVal  // assuming val is %DynamicArray for "part"
 					set found = $$$YES
 				}
 			}
@@ -131,6 +127,123 @@ ClassMethod getOneParameterValueNoModifier(paramName As %String, parameters As H
 	*/
 	
 	quit return
+}
+
+/// Return resource's identifier element of the given type (code/system).
+/// Assumption: identifier.type.coding array has only one entry for each of the identifiers of the resource.
+/// If <var>typeSystem</var> is empty then only identifier.type.coding.code is used when looking up identifier of the given type.
+/// The first found identifier is returned.
+ClassMethod getIdentifierOfType(resource As %DynamicObject, typeCode As %String, typeSystem As %String = "") As %DynamicObject
+{
+	if 'resource.%IsDefined("identifier") || (resource.%GetTypeOf("identifier") '= "array") quit ""
+	
+	#dim iter As %Iterator.Object = resource.identifier.%GetIterator()
+	#dim ident As %DynamicObject
+	while iter.%GetNext(.key, .ident)
+	{
+		if (ident.type.coding."0".code = typeCode) && ((typeSystem = "") || (ident.type.coding."0".system = typeSystem))
+		{
+			return ident
+		}		
+	}
+	
+	quit ""
+}
+
+/// Return array item with the specified id.
+ClassMethod getArrayItemById(array As %DynamicArray, id As %String, Output key) As %DynamicObject
+{
+	#dim iter As %Iterator.Object = array.%GetIterator()
+	while iter.%GetNext(.key, .item)
+	{
+		if (item.id = id) return item
+	}
+	
+	quit ""
+}
+
+/// Return array item with the specified url. To be used with extension arrays.
+ClassMethod getArrayItemByUrl(array As %DynamicArray, url As %String, Output key) As %DynamicObject
+{
+	#dim iter As %Iterator.Object = array.%GetIterator()
+	while iter.%GetNext(.key, .item)
+	{
+		if (item.url = url) return item
+	}
+	
+	quit ""
+}
+
+/// Count array items with the specified name.
+/// This method is intended to be used with "parameter" array of Parameters resource.
+ClassMethod countArrayItemsByName(array As %DynamicArray, name As %String) As %Integer
+{
+	#dim count As %Integer = 0
+	#dim entry As %DynamicObject
+	#dim iter As %Iterator.Object = array.%GetIterator()
+	while iter.%GetNext(.key, .entry)
+	{
+		if (entry.name = name)
+		{
+			set count = count + 1
+		}
+	} // while
+	
+	quit count
+}
+
+/// Return array item with the specified name.
+/// In case of multiple items with the same name:
+///   <var>entryNum</var> is the # of the item to be returned.
+/// This method is intended to be used with "parameter" array of Parameters resource.
+ClassMethod getArrayItemByName(array As %DynamicArray, name As %String, entryNum As %Integer = 1) As %DynamicObject
+{
+	#dim entry As %DynamicObject
+	#dim iter As %Iterator.Object = array.%GetIterator()
+	#dim count As %Integer = 0
+	while iter.%GetNext(.key, .entry)
+	{
+		if (entry.name = name)
+		{
+			set count = count + 1
+			if (entryNum = count) return entry
+		}
+	} // while
+	
+	quit ""
+}
+
+/// Return value[x] from the array item with the specified name.
+/// Returned value can be either %String or %Boolean or %DynamicObject.
+/// In case of multiple items with the same name:
+///   <var>entryNum</var> is the # of the item to be returned.
+/// This method is intended to be used with "parameter" and "parameter.part" arrays of Parameters resource.
+ClassMethod getValueFromArrayItemByName(array As %DynamicArray, name As %String, entryNum As %Integer = 1) As %DynamicObject
+{
+	#dim entry As %DynamicObject
+	#dim iter As %Iterator.Object = array.%GetIterator()
+	#dim count As %Integer = 0
+	while iter.%GetNext(.key, .entry)
+	{
+		if (entry.name = name)
+		{
+			set count = count + 1
+			if (entryNum > count) continue
+			if (entryNum < count) quit
+			
+			#dim iter2 As %Iterator.Object = entry.%GetIterator()
+			#dim elVal As %DynamicObject = ""  // might be %String OR %Boolean OR %DynamicObject
+			while iter2.%GetNext(.elName, .elVal)
+			{
+				if ((elName [ "value") && ($piece(elName, "value", 1) = ""))
+				{
+					return elVal
+				}
+			}
+		}
+	} // while
+	
+	quit ""
 }
 
 }
