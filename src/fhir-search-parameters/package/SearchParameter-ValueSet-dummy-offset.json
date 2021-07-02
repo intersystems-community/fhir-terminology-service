@@ -1,0 +1,14 @@
+{
+	"resourceType": "SearchParameter",
+	"id": "ValueSet-dummy-offset",
+	"url": "urn:SearchParameter:ValueSet:dummy:offset",
+	"version": "4.0.1",
+	"name": "offset",
+	"status": "draft",
+	"code": "offset",
+	"base": [
+		"ValueSet"
+	],
+	"type": "quantity",
+	"expression": "ValueSet.experimental"
+}

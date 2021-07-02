@@ -1,0 +1,14 @@
+{
+	"resourceType": "SearchParameter",
+	"id": "ValueSet-dummy-count",
+	"url": "urn:SearchParameter:ValueSet:dummy:count",
+	"version": "4.0.1",
+	"name": "count",
+	"status": "draft",
+	"code": "count",
+	"base": [
+		"ValueSet"
+	],
+	"type": "quantity",
+	"expression": "ValueSet.experimental"
+}

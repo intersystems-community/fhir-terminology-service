@@ -1,0 +1,14 @@
+{
+	"resourceType": "SearchParameter",
+	"id": "CodeSystem-dummy-display",
+	"url": "urn:SearchParameter:CodeSystem:dummy:display",
+	"version": "4.0.1",
+	"name": "display",
+	"status": "draft",
+	"code": "display",
+	"base": [
+		"CodeSystem"
+	],
+	"type": "string",
+	"expression": "CodeSystem.experimental"
+}

@@ -1,0 +1,14 @@
+{
+	"resourceType": "SearchParameter",
+	"id": "ValueSet-dummy-sort",
+	"url": "urn:SearchParameter:ValueSet:dummy:sort",
+	"version": "4.0.1",
+	"name": "sort",
+	"status": "draft",
+	"code": "sort",
+	"base": [
+		"ValueSet"
+	],
+	"type": "string",
+	"expression": "ValueSet.experimental"
+}

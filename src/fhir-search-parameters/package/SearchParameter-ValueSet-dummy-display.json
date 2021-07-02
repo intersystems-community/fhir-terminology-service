@@ -1,0 +1,14 @@
+{
+	"resourceType": "SearchParameter",
+	"id": "ValueSet-dummy-display",
+	"url": "urn:SearchParameter:ValueSet:dummy:display",
+	"version": "4.0.1",
+	"name": "display",
+	"status": "draft",
+	"code": "display",
+	"base": [
+		"ValueSet"
+	],
+	"type": "string",
+	"expression": "ValueSet.experimental"
+}

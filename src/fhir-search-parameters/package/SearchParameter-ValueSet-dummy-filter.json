@@ -1,0 +1,14 @@
+{
+	"resourceType": "SearchParameter",
+	"id": "ValueSet-dummy-filter",
+	"url": "urn:SearchParameter:ValueSet:dummy:filter",
+	"version": "4.0.1",
+	"name": "filter",
+	"status": "draft",
+	"code": "filter",
+	"base": [
+		"ValueSet"
+	],
+	"type": "string",
+	"expression": "ValueSet.experimental"
+}

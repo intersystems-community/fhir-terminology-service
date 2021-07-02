@@ -1,0 +1,14 @@
+{
+	"resourceType": "SearchParameter",
+	"id": "ValueSet-dummy-system",
+	"url": "urn:SearchParameter:ValueSet:dummy:system",
+	"version": "4.0.1",
+	"name": "system",
+	"status": "draft",
+	"code": "system",
+	"base": [
+		"ValueSet"
+	],
+	"type": "string",
+	"expression": "ValueSet.experimental"
+}
