@@ -19,7 +19,8 @@ ClassMethod getJsonFromXdata(className As %String, xdata As %String) As %Dynamic
 ClassMethod obj2json(obj As %RegisteredObject) As %Stream.Object
 {
 	#dim stream As %FileCharacterStream = ##class(%FileCharacterStream).%New()
-	set stream.TranslateTable = "RAW"
+	set stream.TranslateTable = "UTF8"
+	
 	do stream.Write("")
 	
 	#dim file As %String = stream.Filename
@@ -34,7 +35,6 @@ ClassMethod obj2json(obj As %RegisteredObject) As %Stream.Object
 	try
 	{
 		set sc = ##class(%ZEN.Auxiliary.altJSONProvider).%ObjectToJSON(obj,,,"aeloq")
-		set stream.TranslateTable = "UTF8"
 	}
 	catch ex
 	{
