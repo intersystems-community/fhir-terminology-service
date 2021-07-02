@@ -6,7 +6,7 @@ Class iscru.fhir.fts.FTSCapabilityTemplate Extends HS.FHIRServer.Tools.Capabilit
 ///      then remove searchRevInclude array for that resource from the Capability Statement.
 ClassMethod buildRestEntry(schema As HS.FHIRServer.Schema, pConfigObj As %DynamicObject)
 {
-	// call method of the superclass
+	// call superclass method
 	#dim rest As %DynamicObject = ##super(schema, pConfigObj)
 	if '$isObject(rest) quit rest
 	
@@ -29,9 +29,9 @@ ClassMethod buildRestEntry(schema As HS.FHIRServer.Schema, pConfigObj As %Dynami
 	set iter = rest.resource.%GetIterator()
 	while iter.%GetNext(.temp, .restItem)
 	{
-		if $data(rsrc(restItem.type))
+		if $data(rsrc(restItem.type)) && restItem.%IsDefined("searchRevInclude")
 		{
-			do restItem.%Remove("searchRevInclude")
+			do restItem.%Set("searchRevInclude", [])
 		}
 	}
 
@@ -49,7 +49,7 @@ ClassMethod buildRestEntry(schema As HS.FHIRServer.Schema, pConfigObj As %Dynami
 /// 			}]
 ClassMethod buildResourceEntry(schema As HS.FHIRServer.Schema, pType As %String, pConfigObj As %DynamicObject) As %DynamicObject
 {
-	// call method of the superclass
+	// call superclass method
 	#dim rsrc As %DynamicObject = ##super(schema, pType, pConfigObj)
 	if '$isObject(rsrc) quit rsrc
 	
@@ -85,7 +85,7 @@ ClassMethod buildResourceEntry(schema As HS.FHIRServer.Schema, pType As %String,
 		set iter = rsrc.%Get("searchParam").%GetIterator()
 		while iter.%GetNext(.key, .val)
 		{
-		if $isObject(val) && val.%Extends("%DynamicObject")
+			if $isObject(val) && val.%Extends("%DynamicObject")
 			{
 				#dim name As %String = val.%Get("name")
 				#dim definition As %String = ""
@@ -125,13 +125,16 @@ ClassMethod buildResourceEntry(schema As HS.FHIRServer.Schema, pType As %String,
 	quit rsrc
 }
 
-/// Returns paramExclude array from ConfigFull xdata block
+/// Returns paramExclude array from ConfigFull xdata block.
+/// Should not be used on 2020.4+ versions of IRIS.
 ClassMethod getExcludedSearchParams() As %DynamicArray
 {
 	#dim config As %DynamicObject = ##class(iscru.fhir.JSONUtils).getJsonFromXdata($classname(), "ConfigFull")
 	quit config.paramExclude
 }
 
+/// This XData is not used in 2020.4+ versions of IRIS.
+/// 
 /// Overridden in order to amend the Capability Statement in regard to CodeSystem and ValueSet resources:
 ///  1) remove unsupported search parameters;
 ///  2) limit supported interactions to read and search-type;
@@ -307,6 +310,8 @@ XData ConfigFull [ MimeType = application/json ]
 				}
 			]
 */
+/// This XData is not used in 2020.4+ versions of IRIS.
+/// 
 /// COPIED AS-IS FROM HS.FHIRServer.Tools.CapabilityTemplate
 /// Descriptive fields. None of these fields will modify functionality of an endpoint
 XData BaseResource [ MimeType = application/json ]

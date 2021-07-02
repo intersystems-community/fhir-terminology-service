@@ -64,8 +64,126 @@ ClassMethod isExcludedProperty(className As %String, propertyName As %String) As
 /// which retrieves the stored CapabilityStatement for the current Service.
 Method GetMetadataResource() As %DynamicObject
 {
-	// custom CapabilityTemplate
-	return ##class(iscru.fhir.fts.FTSCapabilityTemplate).BuildFull(..InstanceKey)
+	if ($System.Version.GetMajor() = 2020) && (+$System.Version.GetMinor() <= 3)
+	{
+		// 2020.1-2020.3 versions of IRIS
+		
+		// custom CapabilityTemplate
+		return ##class(iscru.fhir.fts.FTSCapabilityTemplate).BuildFull(..InstanceKey)
+	}
+	else
+	{
+		// 2020.4 and 2021.1 (not sure about the future..)
+		
+		// Start with the static default configuration
+		#dim capabilityConfig as %DynamicObject = ..GetCapabilityConfig()
+		
+		// exclude ALL search params of ValueSet/CodeSystem except "url"
+		// also exclude dummy custom search params (from dummy-search-parameters.json) that had to be added due to IF-1233
+		for i =
+			"ValueSet.code",
+			"ValueSet.context",
+			"ValueSet.context-quantity",
+			"ValueSet.context-type",
+			"ValueSet.context-type-quantity",
+			"ValueSet.context-type-value",
+			"ValueSet.date",
+			"ValueSet.description",
+			"ValueSet.expansion",
+			"ValueSet.experimental",
+			"ValueSet.identifier",
+			"ValueSet.jurisdiction",
+			"ValueSet.name",
+			"ValueSet.publisher",
+			"ValueSet.reference",
+			"ValueSet.status",
+			"ValueSet.title",
+			"ValueSet.version",
+			"CodeSystem.code",
+			"CodeSystem.content-mode",
+			"CodeSystem.context",
+			"CodeSystem.context-quantity",
+			"CodeSystem.context-type",
+			"CodeSystem.context-type-quantity",
+			"CodeSystem.context-type-value",
+			"CodeSystem.date",
+			"CodeSystem.description",
+			"CodeSystem.identifier",
+			"CodeSystem.jurisdiction",
+			"CodeSystem.language",
+			"CodeSystem.name",
+			"CodeSystem.publisher",
+			"CodeSystem.status",
+			"CodeSystem.supplements",
+			"CodeSystem.title",
+			"CodeSystem.version",
+			
+			"ValueSet.sort",
+			"ValueSet.offset",
+			"ValueSet.count",
+			"ValueSet.filter",
+			"ValueSet.system",
+			"ValueSet.display",
+			"CodeSystem.display"
+		{
+			do capabilityConfig.paramExclude.%Push(i)
+		}
+		
+		// override ValueSet resource features:
+		//  1) limit supported interactions to read and search-type;
+		//  2) "versioning": "no-version";
+		//  3) _include/_revinclude parameters not supported;
+		//  4) add profile url;
+		//  5) add resource level operations.
+		set capabilityConfig.resourceOverrides.ValueSet =
+			{
+				"profile": "urn:StructureDefinition:objectscript-valueset",
+				"searchRevInclude": [],
+				"versioning": "no-version",
+				"interactions": [
+					"read",
+					"search-type"
+				],
+				"operations": [
+					{"name": "expand", "definition": "urn:OperationDefinition:ValueSet-expand"},
+					{"name": "validate-code", "definition": "urn:OperationDefinition:ValueSet-validate-code"}
+				]
+			}
+		
+		// override CodeSystem resource features:
+		//  1) limit supported interactions to read and search-type;
+		//  2) "versioning": "no-version";
+		//  3) _include/_revinclude parameters not supported;
+		//  4) add profile url;
+		//  5) add resource level operations.
+		set capabilityConfig.resourceOverrides.CodeSystem =
+			{
+				"profile": "urn:StructureDefinition:objectscript-codesystem",
+				"searchRevInclude": [],
+				"versioning": "no-version",
+				"interactions": [
+					"read",
+					"search-type"
+				],
+				"operations": [
+					{"name": "lookup", "definition": "urn:OperationDefinition:CodeSystem-lookup"},
+					{"name": "validate-code", "definition": "urn:OperationDefinition:CodeSystem-validate-code"}
+				]
+			}
+		
+		// Get Operation list from the OperationHandler
+		#dim interactions As HS.FHIRServer.API.Interactions = ..NewInteractionsInstance()
+		set operationProcessorClass = interactions.#OperationHandlerClass
+		
+		set operationMap = $$$NewJSONObject
+		do $classMethod(operationProcessorClass, "AddSupportedOperations", operationMap)
+		set capabilityConfig.operations = operationMap
+		
+		// return ##class(HS.FHIRServer.Tools.CapabilityStatementBuilder).Build(..schema, ..GetCapabilityTemplate(), capabilityConfig)
+		
+		// NB: iscru.fhir.fts.FTSCapabilityTemplate overrides buildRestEntry() and buildResourceEntry() methods that are called from Build()
+		return ##class(iscru.fhir.fts.FTSCapabilityTemplate).Build(..schema, ..GetCapabilityTemplate(), capabilityConfig)
+	}
 }
 
 /// Determine code table class name (and sql name) given ValueSet.url or CodeSystem.url.
