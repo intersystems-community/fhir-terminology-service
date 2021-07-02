@@ -3,7 +3,7 @@
   <Document name="fhir-terminology-service.ZPM">
     <Module>
       <Name>fhir-terminology-service</Name>
-      <Version>1.0.5</Version>
+      <Version>1.0.6</Version>
       <Description>Implementation of FHIR Terminology Service specification to expose arbitrary persistent classes as FHIR value sets and code systems</Description>
       <Keywords>FHIR,terminology</Keywords>
       <Packaging>module</Packaging>
