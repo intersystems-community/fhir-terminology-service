@@ -31,7 +31,16 @@ ClassMethod buildRestEntry(schema As HS.FHIRServer.Schema, pConfigObj As %Dynami
 	{
 		if $data(rsrc(restItem.type)) && restItem.%IsDefined("searchRevInclude")
 		{
-			do restItem.%Set("searchRevInclude", [])
+			if (+$System.Version.GetMajor() > 2022) 
+				|| (($System.Version.GetMajor() = 2022) && (+$System.Version.GetMinor() >= 2))
+			{
+				do restItem.%Remove("searchRevInclude")
+			}
+			else
+			{
+				// the following line used to work fine until 2022.2
+				do restItem.%Set("searchRevInclude", [])
+			}
 		}
 	}
 
