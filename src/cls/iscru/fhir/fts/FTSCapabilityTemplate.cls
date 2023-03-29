@@ -4,7 +4,7 @@ Class iscru.fhir.fts.FTSCapabilityTemplate Extends HS.FHIRServer.Tools.Capabilit
 /// Overridden in order to amend the Capability Statement as per <var>pConfigObj</var>:
 ///  if _revinclude is not supported for a resource (i.e. resourceOverrides containing "searchRevInclude":[]),
 ///      then remove searchRevInclude array for that resource from the Capability Statement.
-ClassMethod buildRestEntry(schema As HS.FHIRServer.Schema, pConfigObj As %DynamicObject)
+ClassMethod buildRestEntry(schema As HS.FHIRServer.Schema, pConfigObj As %DynamicObject) As %DynamicObject
 {
 	// call superclass method
 	#dim rest As %DynamicObject = ##super(schema, pConfigObj)
