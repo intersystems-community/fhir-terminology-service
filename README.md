@@ -10,7 +10,7 @@ Implementation of FHIR Terminology Service specification (https://www.hl7.org/fh
 2. Open IRIS terminal and set up a new "foundation" namespace, e.g.:
 	```
 	USER> zn "HSLIB"
-	HSLIB> ##class(HS.Util.Installer.Foundation).Install("terminology")
+	HSLIB> do ##class(HS.Util.Installer.Foundation).Install("terminology")
 	```
 3. Import classes into the namespace, e.g.:
 	```
